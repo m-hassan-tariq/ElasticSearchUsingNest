@@ -1,4 +1,4 @@
-# ElasticSearch Using Nest C#
+# ElasticSearch Using Nest
 ElasticSearch Connection, Configuration, Initializing, DML/DDL operations and Searching queries using NEST in .NET
 
 ## Search Queries Example
