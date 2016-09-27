@@ -26,202 +26,202 @@ ElasticSearch Connection, Configuration, Initializing, DML/DDL operations and Se
 
 In order to search specific document use SEARCH API. Please note if type of document has been customized by you during creating index, explicitly mention that type with index for instance (you need to do this if you have not set DefaultIndex API with connection setting object )
 
-            public static object SearchDocumentMethod1(string qr = "IT")
-            {
-                var query = qr.ToLower();
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q =>
-                                        q.Term(t => t.Department, query)
-                                        )
-                                );
-                return response;
-            }
+    public static object SearchDocumentMethod1(string qr = "IT")
+    {
+        var query = qr.ToLower();
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q =>
+                                q.Term(t => t.Department, query)
+                                )
+                        );
+        return response;
+    }
 
-            public static object SearchDocumentMethod2(string qr = "IT")
-            {
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q =>
-                                        q.Match(mq => mq.Field(f => f.Department).Query(qr))
-                                       )
-                                );
-                return response;
-            }
+    public static object SearchDocumentMethod2(string qr = "IT")
+    {
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q =>
+                                q.Match(mq => mq.Field(f => f.Department).Query(qr))
+                               )
+                        );
+        return response;
+    }
     
 ### OR operation:
 
-            public static object SearchDocumentUsingOROperator(string dept = "IT", string name = "XYZ")
-            {
-                var qDept = dept.ToLower();
-                var qName = name.ToLower();
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q => q
-                                        .Bool(b => b
-                                            .Should(
-                                                bs => bs.Term(p => p.Department, qDept),
-                                                bs => bs.Term(p => p.Name, qName)
-                                            )
-                                        )
+    public static object SearchDocumentUsingOROperator(string dept = "IT", string name = "XYZ")
+    {
+        var qDept = dept.ToLower();
+        var qName = name.ToLower();
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q => q
+                                .Bool(b => b
+                                    .Should(
+                                        bs => bs.Term(p => p.Department, qDept),
+                                        bs => bs.Term(p => p.Name, qName)
                                     )
-                                );
-                return response;
-            }
+                                )
+                            )
+                        );
+        return response;
+    }
 
 ### AND operation:
 
-            public static object SearchDocumentUsingANDOperator(string dept = "IT", string name = "XYZ")
-            {
-                var qDept = dept.ToLower();
-                var qName = name.ToLower();
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q => q
-                                        .Bool(b => b
-                                            .Must(
-                                                bs => bs.Term(p => p.Department, qDept),
-                                                bs => bs.Term(p => p.Name, qName)
-                                            )
-                                        )
+    public static object SearchDocumentUsingANDOperator(string dept = "IT", string name = "XYZ")
+    {
+        var qDept = dept.ToLower();
+        var qName = name.ToLower();
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q => q
+                                .Bool(b => b
+                                    .Must(
+                                        bs => bs.Term(p => p.Department, qDept),
+                                        bs => bs.Term(p => p.Name, qName)
                                     )
-                                );
-                return response;
-            }
+                                )
+                            )
+                        );
+        return response;
+    }
 
 ### NOT operation:
 
-            public static object SearchDocumentUsingNOTOperator(string dept = "IT", int empId = 45)
-            {
-                var qDept = dept.ToLower();
-                var qempId = empId;
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(1)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q => q
-                                        .Bool(b => b
-                                            .MustNot(
-                                                bs => bs.Term(p => p.Department, qDept),
-                                                bs => bs.Term(p => p.EmpId, qempId)
-                                            )
-                                        )
+    public static object SearchDocumentUsingNOTOperator(string dept = "IT", int empId = 45)
+    {
+        var qDept = dept.ToLower();
+        var qempId = empId;
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(1)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q => q
+                                .Bool(b => b
+                                    .MustNot(
+                                        bs => bs.Term(p => p.Department, qDept),
+                                        bs => bs.Term(p => p.EmpId, qempId)
                                     )
-                                );
-                return response;
-            }
+                                )
+                            )
+                        );
+        return response;
+    }
 
 ### Operator Overloading for Boolean operation:
 
-            public static object SearchDocumentUsingOperatorOverloading()
-            {
-                var qDept = "IT".ToLower();
-                var qName = "John1".ToLower();
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q => 
-                                        q.Term(p => p.Name, qName) && 
-                                        (q.Term(p => p.Department, qDept) ||
-                                        q.Term(p => p.Salary, 45139)) 
-                                    )
-                                );
-                return response;
-            }
+    public static object SearchDocumentUsingOperatorOverloading()
+    {
+        var qDept = "IT".ToLower();
+        var qName = "John1".ToLower();
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q => 
+                                q.Term(p => p.Name, qName) && 
+                                (q.Term(p => p.Department, qDept) ||
+                                q.Term(p => p.Salary, 45139)) 
+                            )
+                        );
+        return response;
+    }
 
 ### Filter operation:
 
-            public static object SearchDocumentUsingFilter()
-            {
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q => q
-                                    .Bool(b => b
-                                        .Filter(f => f.Range(m => m.Field("salary").LessThan(45139)))
-                                        )
-                                    )
-                                );
-                return response;
-            }
+    public static object SearchDocumentUsingFilter()
+    {
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q => q
+                            .Bool(b => b
+                                .Filter(f => f.Range(m => m.Field("salary").LessThan(45139)))
+                                )
+                            )
+                        );
+        return response;
+    }
     
 ### Complex operation:
 
-            public static object SearchDocumentComplex1()
-            {
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q => q
-                                    .Bool(b => b
-                                        .Must(
-                                            bs => bs.Term(p => p.Salary, "45112"),
-                                            bs => bs.Term(p => p.EmpId, "112"),
-                                            bs => bs.Range(m => m.Field("salary").LessThanOrEquals(45112))
-                                            )   
-                                        )
-                                    )
-                                );
-                return response;
-            }
+    public static object SearchDocumentComplex1()
+    {
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q => q
+                            .Bool(b => b
+                                .Must(
+                                    bs => bs.Term(p => p.Salary, "45112"),
+                                    bs => bs.Term(p => p.EmpId, "112"),
+                                    bs => bs.Range(m => m.Field("salary").LessThanOrEquals(45112))
+                                    )   
+                                )
+                            )
+                        );
+        return response;
+    }
 
-            public static object SearchDocumentComplex2()
-            {
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q => q
-                                    .Bool(b => b
-                                        .Must(
-                                            bs => bs.Term(p => p.Salary, "45112"),
-                                            bs => bs.Term(p => p.EmpId, "112")
-                                            )
-                                        .Filter(f => f.Range(m => m.Field("salary").GreaterThanOrEquals(45112)))
-                                        )
+    public static object SearchDocumentComplex2()
+    {
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q => q
+                            .Bool(b => b
+                                .Must(
+                                    bs => bs.Term(p => p.Salary, "45112"),
+                                    bs => bs.Term(p => p.EmpId, "112")
                                     )
-                                );
-                return response;
-            }
+                                .Filter(f => f.Range(m => m.Field("salary").GreaterThanOrEquals(45112)))
+                                )
+                            )
+                        );
+        return response;
+    }
 
-            public static object SearchDocumentComplex3()
-            {
-                var response = EsClient.Search<Employee>(s => s
-                                .From(0)
-                                .Size(10000)
-                                .Index("employee")
-                                .Type("myEmployee")
-                                .Query(q =>
-                                    q.Term(p => p.Name, "john150") ||
-                                    q.Term(p => p.Salary, "45149") ||
-                                        (
-                                            q.TermRange(p => p.Field(f => f.Salary).GreaterThanOrEquals("45100")) &&
-                                            q.TermRange(p => p.Field(f => f.Salary).LessThanOrEquals("45105"))
-                                        )
-                                    )
-                                );
-                return response;
-            }
+    public static object SearchDocumentComplex3()
+    {
+        var response = EsClient.Search<Employee>(s => s
+                        .From(0)
+                        .Size(10000)
+                        .Index("employee")
+                        .Type("myEmployee")
+                        .Query(q =>
+                            q.Term(p => p.Name, "john150") ||
+                            q.Term(p => p.Salary, "45149") ||
+                                (
+                                    q.TermRange(p => p.Field(f => f.Salary).GreaterThanOrEquals("45100")) &&
+                                    q.TermRange(p => p.Field(f => f.Salary).LessThanOrEquals("45105"))
+                                )
+                            )
+                        );
+        return response;
+    }
 
 ### Notes: 
 
