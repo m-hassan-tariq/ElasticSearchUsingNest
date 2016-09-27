@@ -1,7 +1,7 @@
 # ElasticSearch Using Nest
 ElasticSearch Connection, Configuration, Initializing, DML/DDL operations and Searching queries using NEST in .NET
 
-## Connection and Initializing using NEST
+## Connection and Initializing configuration using NEST
 
         EsNode = new Uri("http://localhost:9200/");
         EsConfig = new ConnectionSettings(EsNode).DefaultIndex("employee");
