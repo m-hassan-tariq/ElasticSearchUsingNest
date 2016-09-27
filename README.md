@@ -1,7 +1,28 @@
 # ElasticSearch Using Nest
 ElasticSearch Connection, Configuration, Initializing, DML/DDL operations and Searching queries using NEST in .NET
 
-## Search Queries Example
+## Connection and Initializing using NEST
+
+        EsNode = new Uri("http://localhost:9200/");
+        EsConfig = new ConnectionSettings(EsNode).DefaultIndex("employee");
+        EsClient = new ElasticClient(EsConfig);
+
+        var settings = new IndexSettings { NumberOfReplicas = 1, NumberOfShards = 2 };
+
+        var indexConfig = new IndexState
+        {
+            Settings = settings
+        };
+
+        if (!EsClient.IndexExists("employee").Exists)
+        {
+            EsClient.CreateIndex("employee", c => c
+                .InitializeUsing(indexConfig)
+                .Mappings(m => m.Map<Employee>(mp => mp.AutoMap()))
+            );
+        }
+
+## Search Queries Example using NEST
 
 In order to search specific document use SEARCH API. Please note if type of document has been customized by you during creating index, explicitly mention that type with index for instance (you need to do this if you have not set DefaultIndex API with connection setting object )
 
